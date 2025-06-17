@@ -6,9 +6,9 @@ import requests
 import logging
 from typing import Dict, Any, Optional
 
-from ..config.constants import KIWOOM_REAL_HOST, KIWOOM_MOCK_HOST, ENDPOINTS, API_IDS
-from ..models.types import TokenRequest, TokenResponse, OrderRequest, OrderResponse
-from ..models.exceptions import KiwoomAPIError, AuthenticationError, OrderError
+from config.constants import KIWOOM_REAL_HOST, KIWOOM_MOCK_HOST, ENDPOINTS, API_IDS
+from models.types import TokenRequest, TokenResponse, OrderRequest, OrderResponse
+from models.exceptions import KiwoomAPIError, AuthenticationError, OrderError
 
 
 class KiwoomAPIClient:

@@ -5,10 +5,12 @@
 ## 🏗️ Project Structure
 
 ```
-kiwoom_mcp/
-├── __init__.py                    # Package initialization
+kiwoom_mcp/                       # Project root
+├── __init__.py                   # Package initialization
 ├── main.py                       # Entry point (clean & simple)
 ├── server.py                     # Main MCP server class
+├── pyproject.toml                # Project configuration
+├── README.md                     # This file
 ├── config/                       # Configuration management
 │   ├── __init__.py
 │   ├── constants.py              # API constants and mappings
@@ -74,7 +76,7 @@ LOG_LEVEL=INFO
 ### Programmatic Configuration
 
 ```python
-from kiwoom_mcp.config.settings import KiwoomConfig, ServerConfig
+from config.settings import KiwoomConfig, ServerConfig
 
 # Create configurations
 kiwoom_config = KiwoomConfig(

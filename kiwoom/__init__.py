@@ -1,5 +1,5 @@
 """Kiwoom API client package"""
 
-from .client import KiwoomAPIClient
+from kiwoom.client import KiwoomAPIClient
 
 __all__ = ["KiwoomAPIClient"] 

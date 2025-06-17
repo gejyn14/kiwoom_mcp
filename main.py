@@ -4,8 +4,8 @@ Kiwoom MCP Server - Entry Point
 """
 
 import asyncio
-from kiwoom_mcp.server import KiwoomMCPServer
-from kiwoom_mcp.config.settings import KiwoomConfig, ServerConfig
+from server import KiwoomMCPServer
+from config.settings import KiwoomConfig, ServerConfig
 
 
 async def main():
