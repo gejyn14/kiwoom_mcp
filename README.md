@@ -1,6 +1,6 @@
 # Kiwoom MCP Server
 
-키움 OPEN API(REST)를 활용한 .
+Levaraging Kiwoom OPEN API to make trading possible in MCP clients.
 
 ## 🏗️ Project Structure
 
