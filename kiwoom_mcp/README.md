@@ -1,6 +1,6 @@
 # Kiwoom MCP Server
 
-A professional, modular MCP (Model Context Protocol) server for Kiwoom Securities API integration.
+키움 OPEN API(REST)를 활용한 .
 
 ## 🏗️ Project Structure
 
@@ -31,9 +31,9 @@ kiwoom_mcp/
     └── logging.py                # Logging configuration
 ```
 
-## 🚀 Features
+## 🚀 특징징
 
-- **Modular Architecture**: Clean separation of concerns
+- **모듈러 아키텍처**: Clean separation of concerns
 - **Type Safety**: Full TypeScript-like typing with Python
 - **Error Handling**: Comprehensive exception handling
 - **Configuration**: Environment-based configuration
