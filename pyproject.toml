@@ -1,7 +1,10 @@
 [project]
 name = "kiwoom-mcp"
 version = "0.1.0"
-description = "Add your description here"
+description = "MCP Server for Kiwoom Securities API"
 readme = "README.md"
 requires-python = ">=3.12"
-dependencies = []
+dependencies = [
+    "mcp>=1.0.0",
+    "requests>=2.32.4",
+]
