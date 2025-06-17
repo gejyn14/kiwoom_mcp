@@ -45,5 +45,7 @@ TRADE_TYPES = {
 API_IDS = {
     "TOKEN": "au10001",
     "BUY_ORDER": "kt10000",
-    "SELL_ORDER": "kt10001"
+    "SELL_ORDER": "kt10001",
+    "MODIFY_ORDER": "kt10002",
+    "CANCEL_ORDER": "kt10003"
 } 

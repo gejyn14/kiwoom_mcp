@@ -195,6 +195,43 @@ class KiwoomMCPServer:
                         "properties": {}
                     }
                 ),
+                types.Tool(
+                    name="stock_modify_order",
+                    description="주식 주문 정정 (kt10002)",
+                    inputSchema={
+                        "type": "object",
+                        "properties": {
+                            "original_order_number": {
+                                "type": "string",
+                                "description": "원주문번호 (정정할 기존 주문번호)"
+                            },
+                            "stock_code": {
+                                "type": "string",
+                                "description": "종목코드 (예: 005930)"
+                            },
+                            "modify_quantity": {
+                                "type": "string",
+                                "description": "정정수량"
+                            },
+                            "modify_price": {
+                                "type": "string",
+                                "description": "정정단가"
+                            },
+                            "exchange": {
+                                "type": "string",
+                                "description": "거래소구분",
+                                "enum": list(EXCHANGE_TYPES.keys()),
+                                "default": "KRX"
+                            },
+                            "modify_condition_price": {
+                                "type": "string",
+                                "description": "정정조건단가",
+                                "default": ""
+                            }
+                        },
+                        "required": ["original_order_number", "stock_code", "modify_quantity", "modify_price"]
+                    }
+                ),
             ]
 
         @self.server.call_tool()
@@ -220,6 +257,8 @@ class KiwoomMCPServer:
                     return await self.order_handler.stock_sell_order(arguments)
                 elif name == "get_trade_types":
                     return await self.order_handler.get_trade_types()
+                elif name == "stock_modify_order":
+                    return await self.order_handler.stock_modify_order(arguments)
                 else:
                     raise ValueError(f"Unknown tool: {name}")
                     

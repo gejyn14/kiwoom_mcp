@@ -11,7 +11,7 @@ from handlers.base import BaseHandler
 from config.settings import KiwoomConfig
 from config.constants import EXCHANGE_TYPES, TRADE_TYPES
 from kiwoom.client import KiwoomAPIClient
-from models.types import OrderRequest
+from models.types import OrderRequest, OrderModifyRequest
 from models.exceptions import OrderError, AuthenticationError
 
 
@@ -115,4 +115,74 @@ class OrderHandler(BaseHandler):
             
         except Exception as e:
             self.logger.error(f"Failed to get trade types: {e}")
-            return self.create_error_response(f"매매구분 조회 실패: {str(e)}") 
+            return self.create_error_response(f"매매구분 조회 실패: {str(e)}")
+    
+    async def stock_modify_order(self, arguments: Dict[str, Any]) -> List[types.TextContent]:
+        """Handle stock order modification"""
+        try:
+            if not self.config.access_token:
+                return self.create_error_response(
+                    "접근 토큰이 설정되지 않았습니다. 먼저 set_access_token을 사용하세요."
+                )
+            
+            # Create order modification request
+            modify_request = OrderModifyRequest(
+                exchange=arguments.get("exchange", "KRX"),
+                original_order_number=arguments["original_order_number"],
+                stock_code=arguments["stock_code"],
+                modify_quantity=arguments["modify_quantity"],
+                modify_price=arguments["modify_price"],
+                modify_condition_price=arguments.get("modify_condition_price", "")
+            )
+            
+            # Get exchange code
+            exchange_code = EXCHANGE_TYPES.get(modify_request.exchange, "KRX")
+            
+            # Update client with current mock setting
+            self.client = KiwoomAPIClient(self.config.is_mock)
+            
+            # Modify order
+            response = self.client.modify_order(
+                modify_request=modify_request,
+                access_token=self.config.access_token,
+                exchange_code=exchange_code
+            )
+            
+            if response.success:
+                message = f"주문 정정이 성공적으로 처리되었습니다.\n\n"
+                message += f"📋 정정 정보:\n"
+                message += f"- 원주문번호: {modify_request.original_order_number}\n"
+                message += f"- 종목코드: {modify_request.stock_code}\n"
+                message += f"- 정정수량: {modify_request.modify_quantity}주\n"
+                message += f"- 정정단가: {modify_request.modify_price}\n"
+                message += f"- 거래소: {modify_request.exchange}\n\n"
+                
+                if response.order_number:
+                    message += f"🔢 새 주문번호: {response.order_number}\n"
+                
+                if response.base_original_order_number:
+                    message += f"📄 모주문번호: {response.base_original_order_number}\n"
+                
+                if response.message:
+                    message += f"💬 응답메시지: {response.message}\n"
+                
+                if response.raw_response:
+                    message += f"\n📊 전체 응답:\n```json\n{json.dumps(response.raw_response, indent=2, ensure_ascii=False)}\n```"
+                
+                return self.create_success_response(message)
+            else:
+                message = f"주문 정정 실패\n\n"
+                if response.raw_response:
+                    message += f"응답: {json.dumps(response.raw_response, indent=2, ensure_ascii=False)}"
+                else:
+                    message += f"오류: {response.message or 'Unknown error'}"
+                
+                return self.create_error_response(message)
+                
+        except OrderError as e:
+            return self.create_error_response(f"주문 정정 오류: {str(e)}")
+        except AuthenticationError as e:
+            return self.create_error_response(f"인증 오류: {str(e)}")
+        except Exception as e:
+            self.logger.error(f"Order modification processing failed: {e}")
+            return self.create_error_response(f"주문 정정 처리 중 오류가 발생했습니다: {str(e)}") 

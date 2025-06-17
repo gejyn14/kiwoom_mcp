@@ -7,7 +7,7 @@ import logging
 from typing import Dict, Any, Optional
 
 from config.constants import KIWOOM_REAL_HOST, KIWOOM_MOCK_HOST, ENDPOINTS, API_IDS
-from models.types import TokenRequest, TokenResponse, OrderRequest, OrderResponse
+from models.types import TokenRequest, TokenResponse, OrderRequest, OrderResponse, OrderModifyRequest, OrderModifyResponse
 from models.exceptions import KiwoomAPIError, AuthenticationError, OrderError
 
 
@@ -125,4 +125,44 @@ class KiwoomAPIClient:
             
         except Exception as e:
             self.logger.error(f"Order request failed: {e}")
-            raise OrderError(f"Order request failed: {str(e)}") 
+            raise OrderError(f"Order request failed: {str(e)}")
+    
+    def modify_order(
+        self, 
+        modify_request: OrderModifyRequest, 
+        access_token: str,
+        exchange_code: str
+    ) -> OrderModifyResponse:
+        """Modify stock order"""
+        try:
+            api_id = API_IDS["MODIFY_ORDER"]
+            
+            headers = {
+                "authorization": f"Bearer {access_token}",
+                "cont-yn": "N",
+                "next-key": "",
+                "api-id": api_id
+            }
+            
+            response_data = self._make_request(
+                "POST",
+                ENDPOINTS["STOCK_ORDER"],
+                modify_request.to_api_dict(exchange_code),
+                headers
+            )
+            
+            # Parse response based on API documentation
+            return OrderModifyResponse(
+                success=True,  # Assume success if no exception
+                order_number=response_data.get("ord_no"),
+                base_original_order_number=response_data.get("base_orig_ord_no"),
+                modify_quantity=response_data.get("mdfy_qty"),
+                exchange_type=response_data.get("dmst_stex_tp"),
+                message=response_data.get("return_msg"),
+                raw_response=response_data,
+                status_code=200
+            )
+            
+        except Exception as e:
+            self.logger.error(f"Order modification request failed: {e}")
+            raise OrderError(f"Order modification request failed: {str(e)}") 
